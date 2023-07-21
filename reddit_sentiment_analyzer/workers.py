@@ -10,5 +10,16 @@ def create_worker(stop_event, q):
         if not record:
             time.sleep(5)
             continue
-        t = Tweet(topic=q[0], twitter_handle=q[1][0], posting_date=q[1][1], message=q[1][2])
-        t.save()
+        print(record)
+        print("step 1")
+        try:
+            t = Tweet(topic_name=record[0], twitter_handle=record[1], posting_date=record[3], message=record[2])
+        except Exception as e:
+            print(e)
+        print("step 2")
+        try:
+            t.save()
+            print("Saved!!!!!")
+        except Exception as e:
+            print(e)
+        print("Done!!!!!")

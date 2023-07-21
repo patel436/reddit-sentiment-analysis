@@ -3,45 +3,37 @@ import praw
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
+from .api_keys import reddit_client_id, reddit_client_secret, reddit_user_agent
+from reddit_sentiment_analyzer.models import Tweet
+from datetime import datetime
 
 class RedditHandle():
+
     def get_tweets(self, query, count=1000):
-
-        # self.cf = ConfigReader()
-        # client_id = self.cf.get('REDDIT', 'client_id')
-        # client_secret = self.cf.get('REDDIT', 'client_secret')
-        try:
-            user_agent = "Scraper 1.0 by /u/patel436"
-            reddit = praw.Reddit(
-                client_id="0mq-q69XrM1ENsI9bQov-A",
-                client_secret="qMCLIIzvj-6AcXIWbzUYrkZiciR9Mg",
-                user_agent=user_agent
-            )
-            print('Authenticated')
-        except:
-            print("Sorry! Error in authentication!")
-
-        headlines = set()
-        for submission in reddit.subreddit(query).top(limit=count):
-                headlines.add(submission.title)
-                print(submission.title)
-                print(submission.author)
+        tweets = Tweet.objects.filter(topic_name=query.lower()).order_by("posting_date").reverse()[:1000]
 
         sia = SIA()
         results = []
-        for line in headlines:
-            pol_score = sia.polarity_scores(line)
-            pol_score['headline'] = line
-            results.append(pol_score)
+        for tweet in tweets:
+            pol_score = sia.polarity_scores(tweet.message)
+            tweet.compound = pol_score.get("compound")
+            results.append({
+                "topic_name": tweet.topic_name,
+                "twitter_handle": tweet.twitter_handle,
+                "posting_date": tweet.posting_date,
+                "message": tweet.message,
+                "compound": pol_score.get("compound")
+            })
         return results
+
+
 
 def authenticate():
     try:
-        user_agent = "Scraper 1.0 by /u/patel436"
         reddit = praw.Reddit(
-            client_id="0mq-q69XrM1ENsI9bQov-A",
-            client_secret="qMCLIIzvj-6AcXIWbzUYrkZiciR9Mg",
-            user_agent=user_agent
+            client_id=reddit_client_id,
+            client_secret=reddit_client_secret,
+            user_agent=reddit_user_agent
         )
         print("Authenticated")
         return reddit
@@ -60,7 +52,7 @@ def start_fetching_submissions(stop_event, topic_names, q):
         for topic_name in topic_names:
             if topic_name in submission.title.lower():
                 print(submission.title)
-                q.enqueue((topic_name, (submission.author, submission.title, submission.created_utc)))
+                q.enqueue((topic_name, submission.author, submission.title, datetime.fromtimestamp(submission.created_utc)))
 
 
 def start_fetching_comments(stop_event, topic_names, q):
@@ -73,5 +65,5 @@ def start_fetching_comments(stop_event, topic_names, q):
             break
         for topic_name in topic_names:
             if topic_name in comment.body.lower():
-                q.enqueue((topic_name, (comment.author, comment.body, comment.created_utc)))
+                q.enqueue((topic_name, comment.author, comment.body, datetime.fromtimestamp(comment.created_utc)))
 
