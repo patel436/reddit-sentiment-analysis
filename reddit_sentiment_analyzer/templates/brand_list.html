@@ -6,6 +6,7 @@
     {% load static %}
     <title>Reddit Sentiment</title>
     <link rel="icon" href="img/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .wrap::before {
             position: absolute;
@@ -46,9 +47,8 @@
                     </div>
                     <div class="uk-navbar-right">
                         <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href="" data-uk-icon="home"></a></li>
-                            <li class="uk-active uk-visible@m"><a href="/user_home/">Add Brand</a></li>
-                            <li class="uk-visible@s"><a href="/Logout/">Logout</a></li>
+                            <li class="uk-active uk-visible@m"><a href="/user_home/" data-uk-icon="home"></a></li>
+                            <li class="uk-visible@s"><a href="/">Logout</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -66,6 +66,8 @@
                         <th scope="col">Topic Name</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Active</th>
+                        <th scope="col">Pause</th>
+                        <th scope="col">Remove</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,6 +78,9 @@
                                 <td><a href={% url 'chart' topic.topic_name%}>{{ topic.topic_name }}</a></td>
                                 <td>{{ topic.created_at }}</td>
                                 <td>{{ topic.active }}</td>
+                                <td><a href="{% url 'pause_topic' topic.topic_name %}"><i class="fas fa-pause"></i></a></td>
+                                <td><a href="{% url 'delete_topic' topic.topic_name %}"><i class="fas fa-trash-alt"></i></a></td>
+
                             </tr>
                         {% endfor %}
 

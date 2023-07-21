@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import LoginForm, RegisterForm, CreateTopicForm
-from .models import Topic
+from .models import Topic, Tweet
 from datetime import datetime
 from reddit_sentiment_analyzer.redditUtils import RedditHandle
 from reddit_sentiment_analyzer.utils import ThreadPool, THREADPOOL_LIMIT, SingletonQueue
@@ -54,12 +54,23 @@ def get_brandlist(request):
     topics = Topic.objects.all()
     return render(request, 'brand_list.html', context={'topics': topics})
 
-def get_topics(request):
-    if request.method == 'POST':
-        topic_name = request.POST.get('topic_name')
-        create_topic(topic_name)
+# def get_topics(request):
+#     if request.method == 'POST':
+#         topic_name = request.POST.get('topic_name')
+#         create_topic(topic_name)
+#     topics = Topic.objects.all()
+#     return render(request, 'topics.html', context={'topics': topics})
+
+def pause_topic(request, topic_name):
     topics = Topic.objects.all()
-    return render(request, 'topics.html', context={'topics': topics})
+    return render(request, 'brand_list.html', context={'topics': topics})
+
+def delete_topic(request, topic_name):
+    Tweet.objects.filter(topic_name=topic_name).delete()
+    Topic.objects.filter(topic_name=topic_name).delete()
+    topics = Topic.objects.all()
+    return render(request, 'brand_list.html', context={'topics': topics})
+
 
 def create_topic(topic_name):
     try:
