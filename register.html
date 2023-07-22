@@ -1,0 +1,120 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+<html>
+<head>
+    {% load static %}
+    <title>Reddit Sentiment</title>
+    <link rel="icon" href="img/favicon.ico">
+    <style>
+        .wrap::before {
+            position: absolute;
+            height: 400vh;
+            width: 400vw;
+            content: '';
+            z-index: 1;
+            background-color: rgba(1,1,0,0.5);
+        }
+        .lead {
+            font-size: 2.175em;
+            font-weight: 300;
+        }
+        .uk-logo img {
+            height: 50px;
+        }
+        /* New styles for improved alignment */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-field {
+            width: 300px; /* Set a specific width for the input fields */
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .uk-button {
+            margin-top: 10px;
+        }
+        .input-label {
+            font-size: 16px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: left;
+            margin-right: 10px;
+            width: 100px;
+        }
+        /* Set a specific width for the input fields */
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+	</style>
+</head>
+
+<body class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
+    <img data-srcset="https://picsum.photos/id/274/640/700/?blur=8 640w,
+                    https://picsum.photos/id/274/960/700/?blur=8 960w,
+                    https://picsum.photos/id/274/1200/900/?blur=8 1200w,
+                    https://picsum.photos/id/274/2000/1000/?blur=8 2000w"
+            sizes="100vw"
+            data-src="https://picsum.photos/id/274/1200/900/?blur=8" alt="" data-uk-cover data-uk-img
+    >
+    <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
+        <!-- NAV -->
+        <div class="uk-position-top">
+            <div class="uk-container uk-container-small">
+                <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>
+                    <div class="uk-navbar-left">
+                        <div class="uk-navbar-item">
+                            <a class="uk-logo" href="">Reddit Sentiment</a>
+                        </div>
+                    </div>
+                    <div class="uk-navbar-right">
+                        <ul class="uk-navbar-nav">
+                            <li class="uk-active uk-visible@m"><a href="/" data-uk-icon="home"></a></li>
+                            <li class="uk-visible@s"><a href="/about/">About Us</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- /NAV -->
+        <!-- TEXT -->
+        <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+            <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 800;">Reddit Sentiment Analysis</h1>
+
+            <!-- REGISTER FORM -->
+            <form class="uk-margin-medium-top animate uk-invisible form-container" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="POST" action="/register/">
+                {% csrf_token %}
+                <div class="uk-margin input-container">
+                    <!-- Username field -->
+                    <label class="input-label" for="{{ register_form.username.id_for_label }}">Username:</label>
+                    <input class="input-field" type="text" id="{{ register_form.username.id_for_label }}" name="{{ register_form.username.name }}" placeholder="Username">
+                </div>
+                <div class="uk-margin input-container">
+                    <!-- Email field -->
+                    <label class="input-label" for="{{ register_form.email.id_for_label }}">Email:</label>
+                    <input class="input-field" type="email" id="{{ register_form.email.id_for_label }}" name="{{ register_form.email.name }}" placeholder="Email">
+                </div>
+                <div class="uk-margin input-container">
+                    <!-- Password field -->
+                    <label class="input-label" for="{{ register_form.password1.id_for_label }}">Password:</label>
+                    <input class="input-field" type="password" id="{{ register_form.password1.id_for_label }}" name="{{ register_form.password1.name }}" placeholder="Password">
+                </div>
+                <div class="uk-margin input-container">
+                    <!-- Confirm Password field -->
+                    <label class="input-label" for="{{ register_form.password2.id_for_label }}">Confirm Password:</label>
+                    <input class="input-field" type="password" id="{{ register_form.password2.id_for_label }}" name="{{ register_form.password2.name }}" placeholder="Confirm Password">
+                </div>
+                <button type="submit" class="uk-button uk-button-default uk-button-large uk-width-2-3 uk-width-auto@s" data-uk-icon="arrow-right">Register</button>
+            </form>
+            <!-- REGISTER FORM -->
+        </div>
+        <!-- /TEXT -->
+    </div>
+</body>
+</html>
+
+{% endblock %}
