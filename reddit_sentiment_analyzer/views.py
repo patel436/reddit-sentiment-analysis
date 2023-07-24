@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import LoginForm, RegisterForm, CreateTopicForm
-from .models import Topic, Tweet
+from .models import Topic, Tweet, User
 from datetime import datetime
+from django.contrib.auth import authenticate, login
 from reddit_sentiment_analyzer.redditUtils import RedditHandle
 from reddit_sentiment_analyzer.utils import ThreadPool, THREADPOOL_LIMIT, SingletonQueue
 from reddit_sentiment_analyzer.workers import create_worker
@@ -10,6 +11,20 @@ from reddit_sentiment_analyzer.redditUtils import start_fetching_comments, start
 # Create your views here.
 def index(request):
     login_form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('user_home')  
+            else:
+                return render(request, 'index.html', {'login_form' : login_form})
+
+    else:
+        form = LoginForm()
     return render(request, 'index.html', {'login_form' : login_form})
 
 def about(request):
@@ -18,8 +33,29 @@ def about(request):
 def user_home(request):
     create_topic_form = CreateTopicForm()
     return render(request, 'user_home.html', {'create_topic_form' : create_topic_form})
+
 def register(request):
     register_form = RegisterForm()
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        user = User()
+        if form.is_valid():
+            # Save the user registration data to the database
+            # (You may want to add additional logic here, e.g., hashing the password before saving)
+            form_data= form
+            user.username = form_data.cleaned_data['username']
+            user.email = form_data.cleaned_data['email']
+            user.password = form_data.cleaned_data['password']
+            user.save()
+            
+            return redirect('user_home')  # Create a success page for successful registration
+        else:
+            msg = "Please enter the Correct Data"
+            return render(request, 'register.html', {'register_form' : register_form, 'msg' : msg})
+    else:
+
+        form = RegisterForm()
+
     return render(request, 'register.html', {'register_form' : register_form})
 
 def show(request, brand):
