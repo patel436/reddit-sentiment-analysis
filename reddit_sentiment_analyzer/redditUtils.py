@@ -7,26 +7,29 @@ from .api_keys import reddit_client_id, reddit_client_secret, reddit_user_agent
 from reddit_sentiment_analyzer.models import Tweet
 from datetime import datetime
 
-class RedditHandle():
+def get_tweets(query, count=1000):
+    tweets = Tweet.objects.filter(topic_name=query.lower()).order_by("posting_date").reverse()[:count]
 
-    def get_tweets(self, query, count=1000):
-        tweets = Tweet.objects.filter(topic_name=query.lower()).order_by("posting_date").reverse()[:1000]
+    results = []
+    tweets = get_compound(tweets)
+    for tweet in tweets:
+        results.append({
+            "topic_name": tweet.topic_name,
+            "twitter_handle": tweet.twitter_handle,
+            "posting_date": tweet.posting_date,
+            "message": tweet.message,
+            "compound": tweet.compound
+        })
+    return results
 
-        sia = SIA()
-        results = []
-        for tweet in tweets:
-            pol_score = sia.polarity_scores(tweet.message)
-            tweet.compound = pol_score.get("compound")
-            results.append({
-                "topic_name": tweet.topic_name,
-                "twitter_handle": tweet.twitter_handle,
-                "posting_date": tweet.posting_date,
-                "message": tweet.message,
-                "compound": pol_score.get("compound")
-            })
-        return results
-
-
+def get_compound(messages):
+    sia = SIA()
+    results = []
+    for message in messages:
+        pol_score = sia.polarity_scores(message.message)
+        message.compound = pol_score.get("compound")
+        results.append(message)
+    return results
 
 def authenticate():
     try:
