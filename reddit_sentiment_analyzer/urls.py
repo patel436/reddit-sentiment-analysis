@@ -1,6 +1,8 @@
 from django.urls import path
 from reddit_sentiment_analyzer import views
 
+app_name='reddit_sentiment_analyzer'
+
 urlpatterns = [
     path('', views.index, name="index"),
     path('about/', views.about, name="about"),

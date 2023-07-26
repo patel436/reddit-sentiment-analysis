@@ -1,5 +1,21 @@
 from .models import Topic, Tweet
 import time
+from reddit_sentiment_analyzer.utils import SingletonQueue
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+def send_comment(message):
+    q = SingletonQueue()
+    if not q.stream:
+        return
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'broadcast_group',  # Change this to the appropriate WebSocket group name if necessary
+        {
+            'type': 'send_message',
+            'message': message,
+        }
+    )
 
 
 def create_worker(stop_event, q):
@@ -10,16 +26,15 @@ def create_worker(stop_event, q):
         if not record:
             time.sleep(5)
             continue
-        print(record)
-        print("step 1")
+
         try:
             t = Tweet(topic_name=record[0], twitter_handle=record[1], posting_date=record[3], message=record[2])
+            send_comment(f"{record[2]}({record[1]})")
         except Exception as e:
             print(e)
-        print("step 2")
+
         try:
             t.save()
-            print("Saved!!!!!")
+
         except Exception as e:
             print(e)
-        print("Done!!!!!")

@@ -50,8 +50,8 @@
             <div class="uk-navbar-right">
                 <ul class="uk-navbar-nav">
                     <li class="uk-active uk-visible@m"><a href="" data-uk-icon="home"></a></li>
-                    <li class="uk-visible@s"><a href="/register/">Register</a></li>
-                    <li class="uk-visible@s"><a href="/about/">About</a></li>
+                    <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:register' %}>Register</a></li>
+                    <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
                 </ul>
             </div>
         </nav>
@@ -68,7 +68,7 @@
 {#            </div>#}
 
             <!-- SUBREDDIT FORM -->
-            <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'user_home' %}">{% csrf_token %}
+            <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'reddit_sentiment_analyzer:user_home' %}">{% csrf_token %}
                 <div class="uk-margin">
                     {{login_form.as_p}}
                 </div>

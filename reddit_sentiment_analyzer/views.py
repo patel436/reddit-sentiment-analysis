@@ -84,6 +84,8 @@ def show(request, brand):
     context['negative_tweets'] = negative_tweets[:5]
     context['neutral_tweets'] = neutral_tweets[:5]
 
+    q = SingletonQueue()
+    q.stream = True
     return render(request, 'chart.html', context)
 
 def get_brandlist(request):
@@ -188,7 +190,7 @@ def pause_topic(request, topic_name):
         restart_all_workers()
     except Exception as e:
         print("Topic does not exist")
-    return HttpResponseRedirect(reverse('brand_list'))
+    return HttpResponseRedirect(reverse('reddit_sentiment_analyzer:brand_list'))
 
 def delete_topic(request, topic_name):
     try:
@@ -200,7 +202,7 @@ def delete_topic(request, topic_name):
     except Exception as e:
         print("failed to delete tweets")
     restart_all_workers()
-    return HttpResponseRedirect(reverse('brand_list'))
+    return HttpResponseRedirect(reverse('reddit_sentiment_analyzer:brand_list'))
 
 
 def create_topic(topic_name):

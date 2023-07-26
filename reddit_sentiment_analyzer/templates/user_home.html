@@ -47,7 +47,7 @@
                     <div class="uk-navbar-right">
                         <ul class="uk-navbar-nav">
                             <li class="uk-active uk-visible@m"><a href="" data-uk-icon="home"></a></li>
-                            <li class="uk-visible@m"><a href={% url 'brand_list'%}>BrandList</a></li>
+                            <li class="uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:brand_list'%}>BrandList</a></li>
                             <li class="uk-visible@s"><a href="/">Logout</a></li>
                         </ul>
                     </div>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- SUBREDDIT FORM -->
-            <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="/brand_list/">{% csrf_token %}
+            <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'reddit_sentiment_analyzer:brand_list'%}">{% csrf_token %}
                 <div class="uk-margin">
                     {{create_topic_form.as_p}}
                 </div>

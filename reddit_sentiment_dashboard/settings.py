@@ -25,9 +25,6 @@ SECRET_KEY = 'p4e$d1^-ez%1fp2_gvqe%j#8&7#tv4jak&$70oe01knn@l@$*d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,9 +35,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'reddit_sentiment_analyzer',
+    'channels'
 ]
 
 MIDDLEWARE = [
+    'reddit_sentiment_analyzer.middleware.custom_middleware.CustomMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'reddit_sentiment_dashboard.wsgi.application'
+ASGI_APPLICATION = 'reddit_sentiment_dashboard.asgi.application'
 
 
 # Database
@@ -82,6 +81,15 @@ DATABASES = {
     }
 }
 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('localhost', 6379)],  # Replace with your Redis server configuration
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -113,7 +121,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
