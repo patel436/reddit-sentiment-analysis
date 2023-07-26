@@ -1,13 +1,19 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from .forms import LoginForm, RegisterForm, CreateTopicForm
 from .models import Topic, Tweet, User
 from datetime import datetime
 from django.contrib.auth import authenticate, login
-from reddit_sentiment_analyzer.redditUtils import RedditHandle
+from reddit_sentiment_analyzer.redditUtils import get_tweets, get_compound
 from reddit_sentiment_analyzer.utils import ThreadPool, THREADPOOL_LIMIT, SingletonQueue
 from reddit_sentiment_analyzer.workers import create_worker
 from reddit_sentiment_analyzer.redditUtils import start_fetching_comments, start_fetching_submissions
-
+from django.utils import timezone
+from django.db.models import Sum
+from dateutil.relativedelta import relativedelta
+from django.db.models import F, ExpressionWrapper, FloatField, Func
+from statistics import mean
 # Create your views here.
 def index(request):
     login_form = LoginForm()
@@ -59,8 +65,7 @@ def register(request):
     return render(request, 'register.html', {'register_form' : register_form})
 
 def show(request, brand):
-    rutils = RedditHandle()
-    tweets = rutils.get_tweets(brand)
+    tweets = get_tweets(brand)
     positive_tweets = [tweet for tweet in tweets if tweet['compound'] > 0.2]
     negative_tweets = [tweet for tweet in tweets if tweet['compound'] < -0.2]
     neutral_tweets = [tweet for tweet in tweets if tweet['compound'] == 0]
@@ -90,6 +95,84 @@ def get_brandlist(request):
     topics = Topic.objects.all()
     return render(request, 'brand_list.html', context={'topics': topics})
 
+
+def get_topics_list():
+    topic_list = Topic.objects.all()
+    return topic_list
+
+
+def get_trendline(request):
+    generate_trendline(request, '')
+
+def generate_trendline(request, topic_name=''):
+    print("topic_name is ", topic_name)
+    options = get_topics_list()
+    if topic_name:
+        # chart call here
+        context = {
+            "options": options,
+            "selected_option": topic_name,
+            "trendline_data": {
+                "daily": get_aggregated_data('daily', topic_name),
+                "monthly": get_aggregated_data('monthly', topic_name),
+                "yearly": get_aggregated_data('yearly', topic_name),
+            }
+        }
+        print(context)
+        return render(request, 'trendline.html', context=context)
+
+    return render(request, 'trendline.html', context={"options": options})
+
+
+def get_aggregated_data(frequency,topic_name):
+    # Get the current date
+    current_date = timezone.now()
+
+    # Calculate the start date based on the specified frequency
+    if frequency == "daily":
+        start_date = current_date - relativedelta(days=30)
+        date_format = "%b %d, %Y"  # Format for daily labels: "Jun 15, 2023"
+    elif frequency == "monthly":
+        start_date = current_date - relativedelta(months=12)
+        date_format = "%b %Y"  # Format for monthly labels: "Jun 2023"
+    elif frequency == "yearly":
+        start_date = current_date - relativedelta(years=5)
+        date_format = "%Y"  # Format for yearly labels: "2023"
+    else:
+        raise ValueError("Invalid frequency. Supported frequencies are 'daily', 'monthly', and 'yearly'.")
+
+    # Get all tweet records within the specified timeframe
+    tweets = Tweet.objects.filter(posting_date__gte=start_date).filter(topic_name=topic_name.lower())
+
+    tweets = get_compound(tweets)
+
+    tweets.sort(key=lambda tweet: tweet.posting_date)
+
+    result = {}
+    current_key = None
+    compound_values = []
+    for tweet in tweets:
+        if tweet.posting_date.strftime(date_format) == current_key:
+            compound_values.append(tweet.compound)
+        else:
+            if current_key is not None:
+                result[current_key] = mean(compound_values)
+            compound_values = [tweet.compound]
+            current_key = tweet.posting_date.strftime(date_format)
+    else:
+        result[current_key] = mean(compound_values)
+
+    op = {
+        'labels':[],
+        'data':[]
+    }
+
+    for key in result.keys():
+        op['labels'].append(key)
+        op['data'].append(result[key])
+
+    return op
+
 # def get_topics(request):
 #     if request.method == 'POST':
 #         topic_name = request.POST.get('topic_name')
@@ -98,14 +181,26 @@ def get_brandlist(request):
 #     return render(request, 'topics.html', context={'topics': topics})
 
 def pause_topic(request, topic_name):
-    topics = Topic.objects.all()
-    return render(request, 'brand_list.html', context={'topics': topics})
+    try:
+        topic = Topic.objects.get(topic_name=topic_name)
+        topic.active = not topic.active
+        topic.save()
+        restart_all_workers()
+    except Exception as e:
+        print("Topic does not exist")
+    return HttpResponseRedirect(reverse('brand_list'))
 
 def delete_topic(request, topic_name):
-    Tweet.objects.filter(topic_name=topic_name).delete()
-    Topic.objects.filter(topic_name=topic_name).delete()
-    topics = Topic.objects.all()
-    return render(request, 'brand_list.html', context={'topics': topics})
+    try:
+        Topic.objects.get(topic_name=topic_name).delete()
+    except Exception as e:
+        print("failed to delete topic")
+    try:
+        Tweet.objects.filter(topic_name=topic_name.lower()).delete()
+    except Exception as e:
+        print("failed to delete tweets")
+    restart_all_workers()
+    return HttpResponseRedirect(reverse('brand_list'))
 
 
 def create_topic(topic_name):
