@@ -74,7 +74,7 @@
                     <div class="uk-navbar-right">
                         <ul class="uk-navbar-nav">
                             <li class="uk-active uk-visible@m"><a href="/" data-uk-icon="home"></a></li>
-                            <li class="uk-visible@s"><a href="/about/">About Us</a></li>
+                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About Us</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -90,7 +90,7 @@
             
             <p>{{msg}}</p>
             {% endif %}
-            <form class="uk-margin-medium-top animate uk-invisible form-container" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'register' %}">
+            <form class="uk-margin-medium-top animate uk-invisible form-container" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'reddit_sentiment_analyzer:register' %}">
                 {% csrf_token %}
                 <div class="uk-margin">
                     {{register_form.as_p}}    

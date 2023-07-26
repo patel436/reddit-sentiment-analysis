@@ -46,8 +46,8 @@
                     </div>
                     <div class="uk-navbar-right">
                         <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href="/user_home/" data-uk-icon="home"></a></li>
-                            <li class="uk-visible@s"><a href="/about/">About</a></li>
+                            <li class="uk-active uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:user_home' %} data-uk-icon="home"></a></li>
+                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -60,7 +60,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-4">
-                            <canvas id="sentimentChart" width="400" height="400"></canvas>
+                            <canvas id="sentimentChart" width="400" height="400" ></canvas>
 
                             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -92,7 +92,48 @@
                     </div>
             </div>
         </div>
-        <!-- /TEXT -->
+
+
+     <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+        <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Streaming Dashboard</h1>
+
+        <h1></h1>
+        <div id="data-container" style="width: 500px; height: 350px; overflow-x: hidden;">
+            <!-- Data will be added here dynamically using JavaScript -->
+        </div>
+
+        <!-- Include JavaScript for WebSocket connection -->
+        <script>
+            const socket = new WebSocket('ws://' + window.location.host + '/ws/reddit_comments/');
+
+            socket.onmessage = function (event) {
+                // Process the received data from the server and add it to the dashboard
+                console.log('Something received.');
+                let data = JSON.parse(event.data);
+                console.log(data);
+                addDataToDashboard(data);
+            };
+
+            // Handle WebSocket connection events
+            socket.onopen = function (event) {
+                console.log('WebSocket connection established. awesome');
+
+            };
+
+
+
+            socket.onclose = function (event) {
+                console.log('WebSocket connection closed.');
+            };
+
+            // Function to add data to the dashboard
+            function addDataToDashboard(data) {
+                // Modify this function to display data on the dashboard as needed
+                var dataContainer = document.getElementById('data-container');
+                dataContainer.innerHTML += '<p>' + JSON.stringify(data) + '</p>';
+            }
+        </script>
+    </div>
     </div>
 </body>
 </html>

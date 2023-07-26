@@ -47,7 +47,7 @@
                     </div>
                     <div class="uk-navbar-right">
                         <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href="/user_home/" data-uk-icon="home"></a></li>
+                            <li class="uk-active uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:user_home' %} data-uk-icon="home"></a></li>
                             <li class="uk-visible@s"><a href="/">Logout</a></li>
                         </ul>
                     </div>
@@ -76,18 +76,18 @@
                     {% if topics %}
                         {% for topic in topics %}
                             <tr>
-                                <td><a href={% url 'chart' topic.topic_name%}>{{ topic.topic_name }}</a></td>
+                                <td><a href={% url 'reddit_sentiment_analyzer:chart' topic.topic_name%}>{{ topic.topic_name }}</a></td>
                                 <td>{{ topic.created_at }}</td>
                                 <td>{{ topic.active }}</td>
-                                <td><a href={% url 'trendline' topic.topic_name%}>Trendline</a></td>
+                                <td><a href={% url 'reddit_sentiment_analyzer:trendline' topic.topic_name%}>Trendline</a></td>
 
                                 {% if topic.active %}
-                                <td><a href="{% url 'pause_topic' topic.topic_name %}"><i class="fas fa-pause"></i></a></td>
+                                <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-pause"></i></a></td>
                                 {% else %}
-                                <td><a href="{% url 'pause_topic' topic.topic_name %}"><i class="fas fa-play"></i></a></td>
+                                <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-play"></i></a></td>
                                 {%  endif %}
 
-                                <td><a href="{% url 'delete_topic' topic.topic_name %}"><i class="fas fa-trash-alt"></i></a></td>
+                                <td><a href="{% url 'reddit_sentiment_analyzer:delete_topic' topic.topic_name %}"><i class="fas fa-trash-alt"></i></a></td>
 
                             </tr>
                         {% endfor %}
