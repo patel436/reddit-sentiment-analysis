@@ -1,6 +1,6 @@
 # Reddit-Sentiment-Analysis
 
-The aim of the project is to reveal customer opinions, feelings, and perceptions published on social media platform by using Reddit sentiment analysis.
+The aim of the project is to reveal customer opinions, feelings, and perceptions published on social media platform by using Reddit Sentiment Analysis.
 
 # To Run
 
