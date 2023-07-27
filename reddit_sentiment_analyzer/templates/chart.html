@@ -1,59 +1,9 @@
-<!doctype html>
-{% extends "base.html" %}
-{% block content %}
-<html>
-<head>
-    {% load static %}
-    <title>Reddit Sentiment</title>
-    <link rel="icon" href="img/favicon.ico">
-    <style>
-        .wrap::before {
-            position: absolute;
-            height: 100vh;
-            width: 100vw;
-            content: '';
-            z-index: 1;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .lead {
-            font-size: 1.175em;
-            font-weight: 300;
-        }
-        .uk-logo img {
-            height: 28px;
-        }
-	</style>
+{% extends "index.html" %}
+{% load static %}
 
-</head>
-
-<body class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
-    <img data-srcset="https://picsum.photos/id/274/640/700/?blur=8 640w,
-                    https://picsum.photos/id/274/960/700/?blur=8 960w,
-                    https://picsum.photos/id/274/1200/900/?blur=8 1200w,
-                    https://picsum.photos/id/274/2000/1000/?blur=8 2000w"
-            sizes="100vw"
-            data-src="https://picsum.photos/id/274/1200/900/?blur=8" alt="" data-uk-cover data-uk-img
-    >
+{% block appcontent %}
     <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
-        <!-- NAV -->
-        <div class="uk-position-top">
-            <div class="uk-container uk-container-small">
-                <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>
-                    <div class="uk-navbar-left">
-                        <div class="uk-navbar-item">
-                            <a class="uk-logo" href="">RedditSentiment</a>
-                        </div>
-                    </div>
-                    <div class="uk-navbar-right">
-                        <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:user_home' %} data-uk-icon="home"></a></li>
-                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!-- /NAV -->
+
         <!-- TEXT -->
         <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
             <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
@@ -95,10 +45,10 @@
 
 
      <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
-        <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Streaming Dashboard</h1>
+        <h2 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Streaming Dashboard</h2>
 
         <h1></h1>
-        <div id="data-container" style="width: 500px; height: 350px; overflow-x: hidden;">
+        <div id="data-container" style="width: 400px; height: 350px; overflow-x: hidden;">
             <!-- Data will be added here dynamically using JavaScript -->
         </div>
 
@@ -135,7 +85,4 @@
         </script>
     </div>
     </div>
-</body>
-</html>
-
 {% endblock %}

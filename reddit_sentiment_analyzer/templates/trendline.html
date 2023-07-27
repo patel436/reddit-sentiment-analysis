@@ -1,187 +1,127 @@
-<!doctype html>
-{% extends "base.html" %}
-{% block content %}
-<html>
-<head>
-    {% load static %}
-    <title>Reddit Sentiment</title>
-    <link rel="icon" href="img/favicon.ico">
-    <style>
-        .wrap::before {
-            position: absolute;
-            height: 100vh;
-            width: 100vw;
-            content: '';
-            z-index: 1;
-            background-color: rgba(0,0,0,0.5);
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+    <h2>Trendline Analysis Chart</h2>
+    <form id="dropdownForm">
+        <label for="options">Select a Topic:</label>
+        <select name="options" id="options">
+            <option value="">Select an option</option>
+            {% for option in options %}
+                <option value="{{ option.topic_name }}"
+                        {% if option == selected_option %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <script>
+        // Handle the change event of the drop-down
+        document.getElementById('options').addEventListener('change', function () {
+            var selectedOption = this.value;
+            console.log(selectedOption);
+            // Perform redirection based on the selected option
+            if (selectedOption !== '') {
+                window.location.href = "/trendline/" + selectedOption;
+            } else {
+                window.location.href = "{% url 'reddit_sentiment_analyzer:trendline' %}"
+            }
+
+            // Add more conditions for other options if needed
+        });
+    </script>
+
+    <br>
+
+    <div>
+        <!-- Selection for aggregation -->
+        <label for="aggregation">Select Aggregation:</label>
+        <select id="aggregation">
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+        </select>
+    </div>
+    <br/>
+    <div id="chart-container">
+        <!-- The chart will be displayed here -->
+        <canvas id="trendlineChart" width="700" height="300"></canvas>
+    </div>
+
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var myChart;
+
+        function destroyChart() {
+            if (typeof myChart !== "undefined") {
+                myChart.destroy();
+            }
         }
-        .lead {
-            font-size: 1.175em;
-            font-weight: 300;
-        }
-        .uk-logo img {
-            height: 28px;
-        }
-	</style>
 
-</head>
+        // Function to update the chart data based on aggregation level
+        function updateChartData(aggregation) {
 
-<body class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
-    <img data-srcset="https://picsum.photos/id/274/640/700/?blur=8 640w,
-                    https://picsum.photos/id/274/960/700/?blur=8 960w,
-                    https://picsum.photos/id/274/1200/900/?blur=8 1200w,
-                    https://picsum.photos/id/274/2000/1000/?blur=8 2000w"
-            sizes="100vw"
-            data-src="https://picsum.photos/id/274/1200/900/?blur=8" alt="" data-uk-cover data-uk-img
-    >
-    <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
-        <!-- NAV -->
-        <div class="uk-position-top">
-            <div class="uk-container uk-container-small">
-                <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>
-                    <div class="uk-navbar-left">
-                        <div class="uk-navbar-item">
-                            <a class="uk-logo" href="">RedditSentiment</a>
-                        </div>
-                    </div>
-                    <div class="uk-navbar-right">
-                        <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:user_home'%} data-uk-icon="home"></a></li>
-                            <li class="uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:brand_list'%}>BrandList</a></li>
-                            <li class="uk-visible@s"><a href="/">Logout</a></li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!-- /NAV -->
-        <!-- TEXT -->
-        <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+            destroyChart();
+            var trendlineData = {{ trendline_data|safe }}; // Data from the context
+            console.log(trendlineData)
+            var chartData;
+            if (aggregation === 'daily') {
+                chartData = trendlineData.daily;
+            } else if (aggregation === 'monthly') {
+                chartData = trendlineData.monthly;
+            } else if (aggregation === 'yearly') {
+                chartData = trendlineData.yearly;
+            }
 
-            <h1>Trendline Analysis Chart</h1>
-             <form id="dropdownForm">
-                <label for="options">Select a Topic:</label>
-                <select name="options" id="options">
-                    <option value="">Select an option</option>
-                    {% for option in options %}
-                        <option value="{{ option.topic_name }}" {% if option == selected_option %}selected{% endif %}>{{ option }}</option>
-                    {% endfor %}
-                </select>
-            </form>
-
-            <script>
-                // Handle the change event of the drop-down
-                document.getElementById('options').addEventListener('change', function () {
-                    var selectedOption = this.value;
-                    console.log(selectedOption);
-                    // Perform redirection based on the selected option
-                    if (selectedOption !== '') {
-                        window.location.href = "/trendline/" + selectedOption;
-                    } else {
-                        window.location.href = "{% url 'reddit_sentiment_analyzer:trendline' %}"
-                    }
-
-
-                    // Add more conditions for other options if needed
-                });
-            </script>
-
-            <br>
-
-            <div>
-                <!-- Selection for aggregation -->
-                <label for="aggregation">Select Aggregation:</label>
-                <select id="aggregation">
-                    <option value="daily">Daily</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                </select>
-            </div>
-            <div id="chart-container">
-                <!-- The chart will be displayed here -->
-                <canvas id="trendlineChart" width="800" height="400"></canvas>
-            </div>
-
-            <!-- Include Chart.js library -->
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-
-            var myChart;
-
-                function destroyChart() {
-                    if (typeof myChart !== "undefined") {
-                        myChart.destroy();
-                    }
-                }
-
-                // Function to update the chart data based on aggregation level
-                function updateChartData(aggregation) {
-
-                    destroyChart();
-                    var trendlineData = {{ trendline_data|safe }}; // Data from the context
-                    console.log(trendlineData)
-                    var chartData;
-                    if (aggregation === 'daily') {
-                        chartData = trendlineData.daily;
-                    } else if (aggregation === 'monthly') {
-                        chartData = trendlineData.monthly;
-                    } else if (aggregation === 'yearly') {
-                        chartData = trendlineData.yearly;
-                    }
-
-                    // Create the chart
-                    var ctx = document.getElementById("trendlineChart").getContext("2d");
-                    myChart = new Chart(ctx, {
-                        type: "line",
-                        data: {
-                            labels: chartData.labels,
-                            datasets: [{
-                                label: "Trendline Data",
-                                data: chartData.data,
-                                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                                borderColor: "rgba(75, 192, 192, 1)",
-                                borderWidth: 1,
-                                fill: true
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        callback: function (value, index, values) {
-                                            // Custom labels for y-axis
-                                            if (value === 0) {
-                                                return "Neutral";
-                                            } else if (value > 0) {
-                                                return "Positive";
-                                            } else {
-                                                return "Negative";
-                                            }
+                // Create the chart
+            var ctx = document.getElementById("trendlineChart").getContext("2d");
+                myChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: "Trendline Data",
+                            data: chartData.data,
+                            backgroundColor: "rgba(75, 192, 192, 0.2)",
+                            borderColor: "rgba(75, 192, 192, 1)",
+                            borderWidth: 1,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value, index, values) {
+                                        // Custom labels for y-axis
+                                        if (value === 0) {
+                                            return "Neutral";
+                                        } else if (value > 0) {
+                                            return "Positive";
+                                        } else {
+                                            return "Negative";
                                         }
                                     }
                                 }
                             }
                         }
-                    });
-                }
-
-                // Handle the change event of the aggregation selection
-                document.getElementById('aggregation').addEventListener('change', function () {
-                    var selectedAggregation = this.value;
-                    updateChartData(selectedAggregation);
+                    }
                 });
+        }
 
-                // Initialize the chart with daily data by default
-                updateChartData("daily");
-            </script>
+        // Handle the change event of the aggregation selection
+        document.getElementById('aggregation').addEventListener('change', function () {
+            var selectedAggregation = this.value;
+            updateChartData(selectedAggregation);
+        });
 
-        </div>
-        <!-- /TEXT -->
+        // Initialize the chart with daily data by default
+        updateChartData("daily");
+    </script>
+
     </div>
-</body>
-</html>
-
+        <!-- /TEXT -->
 {% endblock %}

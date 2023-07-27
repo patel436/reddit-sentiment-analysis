@@ -27,56 +27,33 @@
 </head>
 
 <body class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
-    <img data-srcset="https://picsum.photos/id/274/640/700/?blur=8 640w,
-                    https://picsum.photos/id/274/960/700/?blur=8 960w,
-                    https://picsum.photos/id/274/1200/900/?blur=8 1200w,
-                    https://picsum.photos/id/274/2000/1000/?blur=8 2000w"
-            sizes="100vw"
-            data-src="https://picsum.photos/id/274/1200/900/?blur=8" alt="" data-uk-cover data-uk-img
-    >
+    <img src="{% static 'img/274-1200x900-blur_8.jpg' %}" sizes="100vw" alt="" data-uk-cover data-uk-img>
     <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
-        <!-- NAV -->
-       <!-- NAV -->
-<div class="uk-position-top">
-    <div class="uk-container uk-container-small">
-        <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>
-            <div class="uk-navbar-left">
-                <div class="uk-navbar-item">
-                    <!-- Add the Reddit logo image here -->
-                    <a class="uk-logo" href=""><img src="{% static 'logo.png' %}" alt="Reddit Logo" style="height:50px; padding:5px;"></a>
-                    <a class="uk-logo" href="">RedditSentiment</a>
-                </div>
-            </div>
-            <div class="uk-navbar-right">
-                <ul class="uk-navbar-nav">
-                    <li class="uk-active uk-visible@m"><a href="" data-uk-icon="home"></a></li>
-                    <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:register' %}>Register</a></li>
-                    <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</div>
-<!-- /NAV -->
 
-        <!-- /NAV -->
-        <!-- TEXT -->
-        <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
-            <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Reddit Sentiment Analysis</h1>
-{#            <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">#}
-{#                <p class="lead uk-text-secondary">Enter a subreddit, and view the top sentiments Redditors express and share:</p>#}
-{#            </div>#}
-
-            <!-- SUBREDDIT FORM -->
-            <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'reddit_sentiment_analyzer:user_home' %}">{% csrf_token %}
-                <div class="uk-margin">
-                    {{login_form.as_p}}
-                </div>
-                <button type="submit" class="uk-button uk-button-default uk-button-large uk-width-2-3 uk-width-auto@s" data-uk-icon="arrow-right" >Login</button>
-            </form>
-            <!-- SUBREDDIT FORM -->
+        <div class="uk-position-top">
+            <div class="uk-container uk-container-small">
+                <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>
+                    <div class="uk-navbar-left">
+                        <div class="uk-navbar-item">
+                            <!-- Add the Reddit logo image here -->
+                            <a class="uk-logo" href=""><img src="{% static 'img/logo.png' %}" alt="Reddit Logo" style="height:50px; padding:5px;">RedditSentiment</a>
+                        </div>
+                    </div>
+                    <div class="uk-navbar-right">
+                        <ul class="uk-navbar-nav">
+                            <li class="uk-active uk-visible@m"><a href="/" data-uk-icon="home"></a></li>
+                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:register' %}>Register</a></li>
+                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </div>
-        <!-- /TEXT -->
+
+
+        <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+                {% block appcontent %} {% endblock %}
+        </div>
     </div>
 </body>
 </html>
