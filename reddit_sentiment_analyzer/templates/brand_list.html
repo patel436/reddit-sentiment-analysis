@@ -1,108 +1,48 @@
-<!doctype html>
-{% extends "base.html" %}
-{% block content %}
-<html>
-<head>
-    {% load static %}
-    <title>Reddit Sentiment</title>
-    <link rel="icon" href="img/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .wrap::before {
-            position: absolute;
-            height: 100vh;
-            width: 100vw;
-            content: '';
-            z-index: 1;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .lead {
-            font-size: 1.175em;
-            font-weight: 300;
-        }
-        .uk-logo img {
-            height: 28px;
-        }
-	</style>
+{% extends "index.html" %}
+{% load static %}
 
-</head>
+{% block appcontent %}
 
-<body class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
-    <img data-srcset="https://picsum.photos/id/274/640/700/?blur=8 640w,
-                    https://picsum.photos/id/274/960/700/?blur=8 960w,
-                    https://picsum.photos/id/274/1200/900/?blur=8 1200w,
-                    https://picsum.photos/id/274/2000/1000/?blur=8 2000w"
-            sizes="100vw"
-            data-src="https://picsum.photos/id/274/1200/900/?blur=8" alt="" data-uk-cover data-uk-img
-    >
-    <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
-        <!-- NAV -->
-        <div class="uk-position-top">
-            <div class="uk-container uk-container-small">
-                <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>
-                    <div class="uk-navbar-left">
-                        <div class="uk-navbar-item">
-                            <a class="uk-logo" href="">RedditSentiment</a>
-                        </div>
-                    </div>
-                    <div class="uk-navbar-right">
-                        <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:user_home' %} data-uk-icon="home"></a></li>
-                            <li class="uk-visible@s"><a href="/">Logout</a></li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!-- /NAV -->
-        <!-- TEXT -->
-        <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
-            <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">List of Brands</h1>
-            <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
+    <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">List of Brands</h1>
+    <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
 
-                <table class="table table-striped table-hover table-bordered">
-                <thead class="table-dark">
+        <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Topic Name</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Active</th>
+                <th scope="col">Trendline</th>
+                <th scope="col">Pause</th>
+                <th scope="col">Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% if topics %}
+                {% for topic in topics %}
                     <tr>
-                        <th scope="col">Topic Name</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Active</th>
-                        <th scope="col">Trendline</th>
-                        <th scope="col">Pause</th>
-                        <th scope="col">Remove</th>
+                        <td><a href={% url 'reddit_sentiment_analyzer:chart' topic.topic_name%}>{{ topic.topic_name }}</a></td>
+                        <td>{{ topic.created_at }}</td>
+                        <td>{{ topic.active }}</td>
+                        <td><a href={% url 'reddit_sentiment_analyzer:trendline' topic.topic_name%}>Trendline</a></td>
+
+                        {% if topic.active %}
+                        <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-pause"></i></a></td>
+                        {% else %}
+                        <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-play"></i></a></td>
+                        {%  endif %}
+
+                        <td><a href="{% url 'reddit_sentiment_analyzer:delete_topic' topic.topic_name %}"><i class="fas fa-trash-alt"></i></a></td>
+
                     </tr>
-                </thead>
-                <tbody>
+                {% endfor %}
 
-                    {% if topics %}
-                        {% for topic in topics %}
-                            <tr>
-                                <td><a href={% url 'reddit_sentiment_analyzer:chart' topic.topic_name%}>{{ topic.topic_name }}</a></td>
-                                <td>{{ topic.created_at }}</td>
-                                <td>{{ topic.active }}</td>
-                                <td><a href={% url 'reddit_sentiment_analyzer:trendline' topic.topic_name%}>Trendline</a></td>
+            {% endif %}
 
-                                {% if topic.active %}
-                                <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-pause"></i></a></td>
-                                {% else %}
-                                <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-play"></i></a></td>
-                                {%  endif %}
+        </tbody>
+        </table>
 
-                                <td><a href="{% url 'reddit_sentiment_analyzer:delete_topic' topic.topic_name %}"><i class="fas fa-trash-alt"></i></a></td>
-
-                            </tr>
-                        {% endfor %}
-
-                    {% endif %}
-
-                </tbody>
-                </table>
-
-            </div>
-
-        </div>
-        <!-- /TEXT -->
     </div>
-</body>
-</html>
 
 {% endblock %}

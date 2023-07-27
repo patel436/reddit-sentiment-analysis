@@ -1,60 +1,7 @@
-<!doctype html>
-{% extends "base.html" %}
-{% block content %}
-<html>
-<head>
-    {% load static %}
-    <title>Reddit Sentiment</title>
-    <link rel="icon" href="img/favicon.ico">
-    <style>
-        .wrap::before {
-            position: absolute;
-            height: 100vh;
-            width: 100vw;
-            content: '';
-            z-index: 1;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .lead {
-            font-size: 1.175em;
-            font-weight: 300;
-        }
-        .uk-logo img {
-            height: 28px;
-        }
-	</style>
+{% extends "index.html" %}
+{% load static %}
 
-</head>
-
-<body class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
-    <img data-srcset="https://picsum.photos/id/382/640/700/?blur=8 640w,
-                    https://picsum.photos/id/382/960/700/?blur=8 960w,
-                    https://picsum.photos/id/382/1200/900/?blur=8 1200w,
-                    https://picsum.photos/id/382/2000/1000/?blur=8 2000w"
-            sizes="100vw"
-            data-src="https://picsum.photos/id/382/1200/900/?blur=8" alt="" data-uk-cover data-uk-img
-    >
-    <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
-        
-        <!-- NAV -->
-        <div class="uk-position-top">
-            <div class="uk-container uk-container-small">
-                <nav class="uk-navbar-container uk-navbar-transparent" data-uk-navbar>  
-                    <div class="uk-navbar-left">
-                        <div class="uk-navbar-item">
-                            <a class="uk-logo" href="/">RedditSentiment</a>
-                        </div>
-                    </div>
-                    <div class="uk-navbar-right">
-                        <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href="/" data-uk-icon="home"></a></li>
-                            <li class="uk-visible@s"><a href="">About</a></li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!-- /NAV -->
+{% block appcontent %}
         <!-- ABOUT TEXT -->
         <div class="uk-container uk-container-small uk-flex-auto uk-text-left" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
             <article class="uk-article animate uk-invisible">
@@ -74,8 +21,5 @@
             </article>
         </div>
         <!-- / ABOUT TEXT -->
-    </div>
-</body>
-</html>
 
 {% endblock %}

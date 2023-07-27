@@ -27,11 +27,11 @@ def index(request):
                 login(request, user)
                 return redirect('user_home')  
             else:
-                return render(request, 'index.html', {'login_form' : login_form})
+                return render(request, 'login.html', {'login_form' : login_form})
 
     else:
         form = LoginForm()
-    return render(request, 'index.html', {'login_form' : login_form})
+    return render(request, 'login.html', {'login_form' : login_form})
 
 def about(request):
     return render(request, 'about.html')
