@@ -9,13 +9,14 @@
 
         <p>{{msg}}</p>
         {% endif %}
-        <form class="uk-margin-medium-top animate uk-invisible form-container" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'reddit_sentiment_analyzer:register' %}">
+        <form class="uk-margin-medium-top animate uk-invisible form-container" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post">
             {% csrf_token %}
             <div class="uk-margin">
                 {{register_form.as_p}}
-
             </div>
             <button type="submit" class="uk-button uk-button-default uk-button-large uk-width-2-3 uk-width-auto@s" data-uk-icon="arrow-right">Register</button>
         </form>
+
+        <p>Already have an account? <a href="{% url 'reddit_sentiment_analyzer:index' %}">Sign In</a></p>
         <!-- REGISTER FORM -->
 {% endblock %}

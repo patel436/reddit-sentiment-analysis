@@ -11,7 +11,7 @@ class Tweet(models.Model):
     def __str__(self):
         return self.tweet_id
     
-class User(models.Model):
+class LoginUser(models.Model):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=100)

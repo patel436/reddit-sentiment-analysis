@@ -41,9 +41,15 @@
                     </div>
                     <div class="uk-navbar-right">
                         <ul class="uk-navbar-nav">
-                            <li class="uk-active uk-visible@m"><a href="/" data-uk-icon="home"></a></li>
-                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:register' %}>Register</a></li>
-                            <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
+                            {% if user.is_authenticated %}
+                                <li class="uk-active uk-visible@m"><a href={% url 'reddit_sentiment_analyzer:user_home' %} data-uk-icon="home"></a></li>
+                                <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:brand_list' %}>Brand List</a></li>
+                                <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:logout' %}>Logout</a></li>
+                            {% else %} 
+                                <li class="uk-active uk-visible@m"><a href="/" data-uk-icon="home"></a></li>
+                                <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:register' %}>Register</a></li>
+                                <li class="uk-visible@s"><a href={% url 'reddit_sentiment_analyzer:about' %}>About</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </nav>
