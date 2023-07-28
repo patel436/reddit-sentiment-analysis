@@ -135,3 +135,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'reddit_sentiment_analyzer/static'),]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'reddit_sentiment_analyzer:index'  # URL for the login page

@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import LoginForm, RegisterForm, CreateTopicForm
-from .models import Topic, Tweet, User
+from .models import Topic, Tweet, LoginUser
 from datetime import datetime
-from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from reddit_sentiment_analyzer.redditUtils import get_tweets, get_compound
 from reddit_sentiment_analyzer.utils import ThreadPool, THREADPOOL_LIMIT, SingletonQueue
 from reddit_sentiment_analyzer.workers import create_worker
@@ -14,6 +15,7 @@ from django.db.models import Sum
 from dateutil.relativedelta import relativedelta
 from django.db.models import F, ExpressionWrapper, FloatField, Func
 from statistics import mean
+
 # Create your views here.
 def index(request):
     login_form = LoginForm()
@@ -25,45 +27,45 @@ def index(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('user_home')  
-            else:
-                return render(request, 'login.html', {'login_form' : login_form})
+                return redirect('reddit_sentiment_analyzer:user_home')  
+        else:
+                msg = "Invalid username or password."
+                return render(request, 'login.html', {'login_form' : login_form, 'msg' : msg})
 
     else:
         form = LoginForm()
+    
     return render(request, 'login.html', {'login_form' : login_form})
 
 def about(request):
     return render(request, 'about.html')
 
+def user_logout(request):
+    logout(request)
+    return redirect('reddit_sentiment_analyzer:index')
+
+@login_required
 def user_home(request):
     create_topic_form = CreateTopicForm()
     return render(request, 'user_home.html', {'create_topic_form' : create_topic_form})
 
 def register(request):
-    register_form = RegisterForm()
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        user = User()
-        if form.is_valid():
-            # Save the user registration data to the database
-            # (You may want to add additional logic here, e.g., hashing the password before saving)
-            form_data= form
-            user.username = form_data.cleaned_data['username']
-            user.email = form_data.cleaned_data['email']
-            user.password = form_data.cleaned_data['password']
-            user.save()
+        register_form = RegisterForm()
+        if request.method == 'POST':
+            form = RegisterForm(request.POST)
+
+            if form.is_valid():
+                form.save()
+                return redirect('reddit_sentiment_analyzer:index')  # Redirect on successful registration
             
-            return redirect('user_home')  # Create a success page for successful registration
+            else:
+                msg = "Please enter the Correct Data"
+                return render(request, 'register.html', {'register_form' : register_form, 'msg' : msg})
         else:
-            msg = "Please enter the Correct Data"
-            return render(request, 'register.html', {'register_form' : register_form, 'msg' : msg})
-    else:
+            form = RegisterForm()
+            return render(request, 'register.html', {'register_form' : register_form})
 
-        form = RegisterForm()
-
-    return render(request, 'register.html', {'register_form' : register_form})
-
+@login_required
 def show(request, brand):
     tweets = get_tweets(brand)
     positive_tweets = [tweet for tweet in tweets if tweet['compound'] > 0.2]
@@ -88,6 +90,7 @@ def show(request, brand):
     q.stream = True
     return render(request, 'chart.html', context)
 
+@login_required
 def get_brandlist(request):
     if request.method == 'POST':
         form = CreateTopicForm(request.POST)
@@ -102,10 +105,11 @@ def get_topics_list():
     topic_list = Topic.objects.all()
     return topic_list
 
-
+@login_required
 def get_trendline(request):
     generate_trendline(request, '')
 
+@login_required
 def generate_trendline(request, topic_name=''):
     print("topic_name is ", topic_name)
     options = get_topics_list()
@@ -125,7 +129,7 @@ def generate_trendline(request, topic_name=''):
 
     return render(request, 'trendline.html', context={"options": options})
 
-
+@login_required
 def get_aggregated_data(frequency,topic_name):
     # Get the current date
     current_date = timezone.now()

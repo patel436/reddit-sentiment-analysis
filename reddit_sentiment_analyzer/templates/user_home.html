@@ -3,7 +3,13 @@
 
 {% block appcontent %}
     <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
-        <p class="lead uk-text-secondary">Enter a brandname, and view the top positive, negative and neutral sentiments</p>
+        <p class="lead uk-text-secondary">
+            {% if user.is_authenticated %}
+                Welcome, {{ user.username }}!
+            {% endif %}
+
+        </p>       
+        <p class="lead uk-text-secondary">Enter a brandname to see the top positive, negative and neutral sentiments</p>
     </div>
 
     <!-- SUBREDDIT FORM -->
