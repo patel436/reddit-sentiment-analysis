@@ -1,12 +1,11 @@
 {% extends "index.html" %}
-{% load static %}
 
 {% block appcontent %}
 
-    <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">List of Brands</h1>
+    <h2 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">List of Brands</h2>
     <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
 
-        <table class="table table-striped table-hover table-bordered">
+        <table class="styled-table">
         <thead class="table-dark">
             <tr>
                 <th scope="col">Topic Name</th>
@@ -22,10 +21,10 @@
             {% if topics %}
                 {% for topic in topics %}
                     <tr>
-                        <td><a href={% url 'reddit_sentiment_analyzer:chart' topic.topic_name%}>{{ topic.topic_name }}</a></td>
+                        <td><a href={% url 'reddit_sentiment_analyzer:chart' topic.topic_name%}><u>{{ topic.topic_name }}</u></a></td>
                         <td>{{ topic.created_at }}</td>
                         <td>{{ topic.active }}</td>
-                        <td><a href={% url 'reddit_sentiment_analyzer:trendline' topic.topic_name%}>Trendline</a></td>
+                        <td><a href={% url 'reddit_sentiment_analyzer:trendline' topic.topic_name%}><u>trendline</u></a></td>
 
                         {% if topic.active %}
                         <td><a href="{% url 'reddit_sentiment_analyzer:pause_topic' topic.topic_name %}"><i class="fas fa-pause"></i></a></td>
