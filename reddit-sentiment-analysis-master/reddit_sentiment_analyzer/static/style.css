@@ -1,0 +1,83 @@
+/* Reset default styles for table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Style the table with white border */
+.styled-table {
+    border: 1px solid white;
+}
+
+/* Style table header */
+.styled-table th {
+    border: 1px solid white;
+    padding: 10px;
+    color: white;
+}
+
+/* Style table data cells */
+.styled-table td {
+    border: 1px solid white;
+    padding: 10px;
+}
+
+/* Make rows equal height (optional) */
+.styled-table tr {
+    height: 50px; /* Adjust the height as needed */
+}
+
+/* Apply basic styling to the scrollable container */
+.scrollable-container {
+    width: 550px; /* Set your desired width */
+    height: 300px; /* Set your desired height */
+    overflow: auto;
+    position: relative;
+    margin-left: 20px;
+    overflow-x: hidden;
+    border: 1px solid #ccc; /* Add a border for visualization */
+}
+
+/* Style the scrollbar for WebKit-based browsers (e.g., Chrome, Safari) */
+/* The scrollbar styles will only apply to WebKit-based browsers */
+.scrollable-container::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+/* CSS Styles for the form */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-container .uk-margin {
+    width: 80%;
+    max-width: 400px; /* Adjust this value as needed */
+    margin: 10px auto;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+

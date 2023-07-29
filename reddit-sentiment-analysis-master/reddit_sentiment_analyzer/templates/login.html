@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+
+    <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Reddit Sentiment Analysis</h1>
+    {% if msg %}
+
+    <p>{{msg}}</p>
+    {% endif %}
+    <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post">{% csrf_token %}
+        <div class="uk-margin">
+            {{login_form.as_p}}
+        </div>
+        <button type="submit" class="uk-button uk-button-default uk-button-large uk-width-2-3 uk-width-auto@s" data-uk-icon="arrow-right" >Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'reddit_sentiment_analyzer:register' %}">Sign up</a></p>
+
+{%  endblock %}

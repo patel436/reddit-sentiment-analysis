@@ -1,0 +1,89 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+    <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400" style="width: 1050px;">
+
+        <!-- TEXT -->
+        <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+            <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-4">
+                            <canvas id="sentimentChart" width="400" height="400" ></canvas>
+
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                            <script>
+                                // Retrieve the sentiment percentage value from the Django view
+                                var positiveSentiment = {{ sentiment.positive_sentiment }};
+                                var negativeSentiment = {{ sentiment.negative_sentiment }};
+                                var neutralSentiment = {{ sentiment.neutral_sentiment }};
+
+                                    // Create the pie chart
+                                    var ctx = document.getElementById('sentimentChart').getContext('2d');
+                                    var chart = new Chart(ctx, {
+                                        type: 'pie',
+                                        data: {
+                                            labels: ['Positive', 'Negative', 'Neutral'],
+                                            datasets: [{
+                                                data: [positiveSentiment, negativeSentiment, neutralSentiment],
+                                                backgroundColor: ['#63ff9a', '#FF6384', '#36A2EB'],
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+
+     <div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300" >
+        <h2 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Streaming Dashboard</h2>
+
+        <h1></h1>
+        <div id="data-container" class="scrollable-container">
+            <!-- Data will be added here dynamically using JavaScript -->
+        </div>
+
+        <!-- Include JavaScript for WebSocket connection -->
+        <script>
+            const socket = new WebSocket('ws://' + window.location.host + '/ws/reddit_comments/');
+
+            socket.onmessage = function (event) {
+                // Process the received data from the server and add it to the dashboard
+                console.log('Something received.');
+                let data = JSON.parse(event.data);
+                console.log(data);
+                addDataToDashboard(data);
+            };
+
+            // Handle WebSocket connection events
+            socket.onopen = function (event) {
+                console.log('WebSocket connection established. awesome');
+
+            };
+
+
+
+            socket.onclose = function (event) {
+                console.log('WebSocket connection closed.');
+            };
+
+            // Function to add data to the dashboard
+            function addDataToDashboard(data) {
+                // Modify this function to display data on the dashboard as needed
+                var dataContainer = document.getElementById('data-container');
+                dataContainer.innerHTML += '<p>' + JSON.stringify(data) + '</p>';
+                dataContainer.scrollTop = dataContainer.scrollHeight;
+            }
+        </script>
+    </div>
+    </div>
+{% endblock %}

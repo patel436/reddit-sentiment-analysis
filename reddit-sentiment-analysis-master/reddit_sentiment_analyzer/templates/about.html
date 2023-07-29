@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+        <!-- ABOUT TEXT -->
+        <div class="uk-container uk-container-small uk-flex-auto uk-text-left" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+            <article class="uk-article animate uk-invisible">
+                <h1 class="uk-article-title">About</h1>
+            
+                <p class="uk-text-meta"><strong>TECHNOLOGIES USED</strong></p>
+                
+                <dl class="uk-description-list uk-description-list-divider">
+                        <dt class="uk-text-primary">Django</dt>
+                        <dd>Django, a Python-based web framework, composes the skeleton of the website.</dd>
+                        <dt class="uk-text-primary">Reddit API</dt>
+                        <dd>Reddit's API is queried with the user's desired subreddit, returning detailed comment and submission information.</dd>
+                        <dt class="uk-text-primary">Google Cloud Natural Language API</dt>
+                        <dd>Google's Cloud NLP API is called on cleaned comment text, returning sentiment data to be parsed.</dd>
+                </dl>
+                <p class="uk-text-small">Note: if all comments show the same number of upvotes, that means the subreddit has set comment scores to be hidden for a period of time after being posted.</p>
+            </article>
+        </div>
+        <!-- / ABOUT TEXT -->
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+    <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
+        <p class="lead uk-text-secondary">
+            {% if user.is_authenticated %}
+                Welcome, {{ user.username }}!
+            {% endif %}
+
+        </p>       
+        <p class="lead uk-text-secondary">Enter a brandname to see the top positive, negative and neutral sentiments</p>
+    </div>
+
+    <!-- SUBREDDIT FORM -->
+    <form class="uk-margin-medium-top animate uk-invisible" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post" action="{% url 'reddit_sentiment_analyzer:brand_list'%}">{% csrf_token %}
+        <div class="uk-margin">
+            {{create_topic_form.as_p}}
+        </div>
+        <button type="submit" class="uk-button uk-button-default uk-button-large uk-width-2-3 uk-width-auto@s" data-uk-icon="arrow-right" >Submit</button>
+    </form>
+    <!-- SUBREDDIT FORM -->
+
+{% endblock %}

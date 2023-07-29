@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+    <h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">Reddit Sentiment Analysis</h1>
+
+    <!-- REGISTER FORM -->
+    {% if msg %}
+        <p>{{ msg }}</p>
+    {% endif %}
+    <form class="uk-margin-medium-top animate uk-invisible form-container" data-uk-margin data-uk-scrollspy-class="uk-animation-fade uk-invisible" method="post">
+        {% csrf_token %}
+        <div class="uk-margin">
+            <label for="{{ register_form.username.id_for_label }}">Username:</label>
+            {{ register_form.username }}
+            {% if register_form.username.errors %}
+                <p class="uk-text-danger">{{ register_form.username.errors }}</p>
+            {% endif %}
+        </div>
+        <div class="uk-margin">
+            <label for="{{ register_form.email.id_for_label }}">Email:</label>
+            {{ register_form.email }}
+            {% if register_form.email.errors %}
+                <p class="uk-text-danger">{{ register_form.email.errors }}</p>
+            {% endif %}
+        </div>
+        <div class="uk-margin">
+            <label for="{{ register_form.password1.id_for_label }}">Password:</label>
+            {{ register_form.password1 }}
+            {% if register_form.password1.errors %}
+                <p class="uk-text-danger">{{ register_form.password1.errors }}</p>
+            {% endif %}
+        </div>
+        <div class="uk-margin">
+            <label for="{{ register_form.password2.id_for_label }}">Confirm Password:</label>
+            {{ register_form.password2 }}
+            {% if register_form.password2.errors %}
+                <p class="uk-text-danger">{{ register_form.password2.errors }}</p>
+            {% endif %}
+        </div>
+        <button type="submit" class="uk-button uk-button-default uk-button-large uk-width-2-3 uk-width-auto@s" data-uk-icon="arrow-right">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'reddit_sentiment_analyzer:index' %}">Sign In</a></p>
+    <!-- REGISTER FORM -->
+{% endblock %}
