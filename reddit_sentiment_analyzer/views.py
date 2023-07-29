@@ -129,7 +129,7 @@ def generate_trendline(request, topic_name=''):
 
     return render(request, 'trendline.html', context={"options": options})
 
-@login_required
+
 def get_aggregated_data(frequency,topic_name):
     # Get the current date
     current_date = timezone.now()
