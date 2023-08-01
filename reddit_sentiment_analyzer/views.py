@@ -92,13 +92,17 @@ def show(request, brand):
 
 @login_required
 def get_brandlist(request):
+    msg = ''
     if request.method == 'POST':
         form = CreateTopicForm(request.POST)
         if form.is_valid():
             topic_name = form.cleaned_data["topicname"]
-            create_topic(topic_name)
+            if Topic.objects.all().count() < 3:
+                create_topic(topic_name)
+            else:
+                msg = 'Upto 3 brands allowed. Upgrade to premium for more!'
     topics = Topic.objects.all()
-    return render(request, 'brand_list.html', context={'topics': topics})
+    return render(request, 'brand_list.html', context={'topics': topics, 'msg' : msg})
 
 
 def get_topics_list():

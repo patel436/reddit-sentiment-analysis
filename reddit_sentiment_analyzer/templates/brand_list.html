@@ -2,6 +2,22 @@
 
 {% block appcontent %}
 
+
+
+     {% if msg %}
+         <div id="myPopup" class="popup">
+            <div class="popup-content">
+                <p>{{msg}}</p>
+                <button id="closePopup">Close</button>
+            </div>
+        </div>
+         <script>
+            closePopup.addEventListener("click", function () {
+                document.getElementById('myPopup').style.display = "none";
+            });
+        </script>
+    {% endif %}
+
     <h2 class="uk-heading-primary animate uk-invisible" style="font-weight: 500;">List of Brands</h2>
     <div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
 
