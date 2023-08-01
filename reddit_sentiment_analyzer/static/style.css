@@ -1,5 +1,6 @@
 /* Reset default styles for table */
 table {
+    background-color: rgba(0, 0, 0, 0.4);
     border-collapse: collapse;
     width: 100%;
 }
@@ -54,5 +55,29 @@ table {
 
 .scrollable-container::-webkit-scrollbar-thumb:hover {
     background-color: #555;
+}
+
+
+.popup {
+    position: relative;
+    z-index: 1;
+    left: 30%;
+    top: 35%;
+    width: 40%;
+    height: 20%;
+    overflow: auto;
+    display: block;
+    border: 1px solid white;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.4);
+    /*display: none;*/
+}
+.popup-content {
+    padding: 20px;
+    font-weight: bolder;
+}
+.popup-content button {
+    display: block;
+    margin: 0 auto;
 }
 
