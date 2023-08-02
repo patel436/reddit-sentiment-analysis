@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block appcontent %}
+        <!-- ABOUT TEXT -->
+        <div class="uk-container uk-container-small uk-flex-auto uk-text-left" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+            <article class="uk-article animate uk-invisible">
+                <h1 class="uk-article-title">About</h1>
+            <p class="uk-text-meta"><strong>We make Brands know their Trend</strong></p>
+                <p class="uk-text-meta"><strong>Welcome to Reddit Sentiment Analyzer, your go-to destination for understanding the collective voice of Reddit communities. Our cutting-edge sentiment analysis tool empowers individuals and businesses alike to unlock valuable insights hidden within the vast expanse of Reddit conversations.</strong></p>
+                <p class="uk-text-meta"><strong>TECHNOLOGIES USED</strong></p>
+                
+                <dl class="uk-description-list uk-description-list-divider">
+                        <dt class="uk-text-primary">Django</dt>
+                        <dd>Django, a Python-based web framework, composes the skeleton of the website.</dd>
+                        <dt class="uk-text-primary">Reddit API</dt>
+                        <dd>Reddit's API is queried with the user's desired subreddit, returning detailed comment and submission information.</dd>
+                        <dt class="uk-text-primary">BootStrap</dt>
+                        <dd>Bootstrap includes HTML and CSS based design templates for typography, forms, buttons, tables, navigation, modals, image carousels and many other, as well as optional JavaScript plugins.</dd>
+                </dl>
+                <p class="uk-text-small"> Have questions, feedback, or need support? Our support team is just a click away. Feel free to reach out to us at support@redditsentimentanalyzer.com, and we'll be happy to assist you.</p>
+            </article>
+        </div>
+        <!-- / ABOUT TEXT -->
+
+{% endblock %}
