@@ -92,6 +92,7 @@ def show(request, brand):
 
     q = SingletonQueue()
     q.stream = True
+    q.activeTopic = brand
     return render(request, 'chart.html', context)
 
 @login_required
