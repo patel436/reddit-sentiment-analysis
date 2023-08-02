@@ -2,6 +2,20 @@
 {% load static %}
 
 {% block appcontent %}
+
+    {% if msg %}
+         <div id="myPopup" class="popup">
+            <div class="popup-content">
+                <p>{{msg}}</p>
+                <button id="closePopup">Close</button>
+            </div>
+        </div>
+         <script>
+            closePopup.addEventListener("click", function () {
+                document.getElementById('myPopup').style.display = "none";
+            });
+        </script>
+    {% else %}
     <h2>Trendline Analysis Chart</h2>
     <form id="dropdownForm">
         <label for="options">Select a Topic:</label>
@@ -124,4 +138,5 @@
 
     </div>
         <!-- /TEXT -->
+    {% endif %}
 {% endblock %}
