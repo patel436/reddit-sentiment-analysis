@@ -68,6 +68,9 @@ def register(request):
 @login_required
 def show(request, brand):
     tweets = get_tweets(brand)
+    if len(tweets) == 0:
+        msg='No data found. Try after some time.'
+        return render(request, 'chart.html', {'msg' : msg})
     positive_tweets = [tweet for tweet in tweets if tweet['compound'] > 0.2]
     negative_tweets = [tweet for tweet in tweets if tweet['compound'] < -0.2]
     neutral_tweets = [tweet for tweet in tweets if tweet['compound'] == 0]
@@ -85,6 +88,7 @@ def show(request, brand):
     context['positive_tweets'] = positive_tweets[:5]
     context['negative_tweets'] = negative_tweets[:5]
     context['neutral_tweets'] = neutral_tweets[:5]
+    context['topic'] = brand
 
     q = SingletonQueue()
     q.stream = True
@@ -118,6 +122,10 @@ def generate_trendline(request, topic_name=''):
     print("topic_name is ", topic_name)
     options = get_topics_list()
     if topic_name:
+        tweets = Tweet.objects.filter(topic_name=topic_name.lower())
+        if len(tweets) == 0:
+            msg ='No enough data to generate trendline.'
+            return render(request, 'trendline.html', {'msg': msg})
         # chart call here
         context = {
             "options": options,
@@ -128,7 +136,6 @@ def generate_trendline(request, topic_name=''):
                 "yearly": get_aggregated_data('yearly', topic_name),
             }
         }
-        print(context)
         return render(request, 'trendline.html', context=context)
 
     return render(request, 'trendline.html', context={"options": options})
