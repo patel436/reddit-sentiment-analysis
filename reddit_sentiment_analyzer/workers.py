@@ -29,7 +29,8 @@ def create_worker(stop_event, q):
 
         try:
             t = Tweet(topic_name=record[0], twitter_handle=record[1], posting_date=record[3], message=record[2])
-            send_comment(f"{record[2]}({record[1]})")
+            if record[0].lower() == q.activeTopic.lower():
+                send_comment(f"{record[2]}({record[1]})")
         except Exception as e:
             print(e)
 
